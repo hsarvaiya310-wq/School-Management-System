@@ -1,0 +1,1 @@
+namespace schoolms{public partial class Profile{protected global::System.Web.UI.HtmlControls.HtmlForm form1;protected global::System.Web.UI.WebControls.Literal litTeacher;protected global::System.Web.UI.WebControls.Literal litProfile;}}

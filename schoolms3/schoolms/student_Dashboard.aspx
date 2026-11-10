@@ -1,0 +1,910 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/student.Master" AutoEventWireup="true" CodeBehind="student_Dashboard.aspx.cs" Inherits="schoolms.student_Dashboard" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+</asp:Content>
+<asp:Content ID="Content5" runat="server" contentplaceholderid="ContentPlaceHolder1">
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Student Portal</title>
+                    <style>
+
+                        /* Reset and Base Styles */
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        }
+
+                        body {
+                            background-color: #f5f5f5;
+                            color: #333;
+                            line-height: 1.6;
+                        }
+
+                        /* Master Page Layout */
+                        .container {
+                            display: grid;
+                            grid-template-rows: auto 1fr auto;
+                            min-height: 100vh;
+                        }
+
+                        /* Header Styles */
+                        header {
+                            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+                            color: white;
+                            padding: 1rem 2rem;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                        }
+
+                        .header-content {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            max-width: 1200px;
+                            margin: 0 auto;
+                        }
+
+                        .logo {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+
+                            .logo h1 {
+                                font-size: 1.8rem;
+                                font-weight: 700;
+                            }
+
+                        .logo-icon {
+                            font-size: 2rem;
+                        }
+
+                        .user-info {
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                        }
+
+                        .avatar {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            background-color: #fff;
+                            color: #1a2a6c;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-weight: bold;
+                        }
+
+                        /* Navigation Styles */
+                        nav {
+                            background-color: #2c3e50;
+                            padding: 0.5rem 0;
+                        }
+
+                        .nav-container {
+                            max-width: 1200px;
+                            margin: 0 auto;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+
+                        .nav-links {
+                            display: flex;
+                            list-style: none;
+                        }
+
+                            .nav-links li {
+                                margin: 0;
+                            }
+
+                            .nav-links a {
+                                color: white;
+                                text-decoration: none;
+                                padding: 0.8rem 1.5rem;
+                                display: block;
+                                transition: background-color 0.3s;
+                                border-radius: 4px;
+                                margin: 0 2px;
+                            }
+
+                                .nav-links a:hover, .nav-links a.active {
+                                    background-color: #34495e;
+                                }
+
+                        .logout-btn {
+                            background-color: #e74c3c;
+                            color: white;
+                            border: none;
+                            padding: 0.5rem 1rem;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: background-color 0.3s;
+                        }
+
+                            .logout-btn:hover {
+                                background-color: #c0392b;
+                            }
+
+                        /* Main Content Styles */
+                        main {
+                            max-width: 1200px;
+                            margin: 2rem auto;
+                            padding: 0 2rem;
+                        }
+
+                        .page {
+                            display: none;
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            padding: 2rem;
+                            animation: fadeIn 0.5s;
+                        }
+
+                            .page.active {
+                                display: block;
+                            }
+
+                        @keyframes fadeIn {
+                            from {
+                                opacity: 0;
+                            }
+
+                            to {
+                                opacity: 1;
+                            }
+                        }
+
+                        .page-header {
+                            margin-bottom: 1.5rem;
+                            padding-bottom: 0.5rem;
+                            border-bottom: 2px solid #eee;
+                        }
+
+                            .page-header h2 {
+                                color: #2c3e50;
+                                font-size: 1.8rem;
+                            }
+
+                        /* Dashboard Styles */
+                        .dashboard-cards {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                            gap: 1.5rem;
+                            margin-top: 1.5rem;
+                        }
+
+                        .card {
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            padding: 1.5rem;
+                            transition: transform 0.3s;
+                            border-left: 4px solid #1a2a6c;
+                        }
+
+                            .card:hover {
+                                transform: translateY(-5px);
+                            }
+
+                            .card h3 {
+                                color: #2c3e50;
+                                margin-bottom: 0.5rem;
+                            }
+
+                            .card p {
+                                color: #7f8c8d;
+                                font-size: 0.9rem;
+                            }
+
+                        .card-icon {
+                            font-size: 2rem;
+                            margin-bottom: 1rem;
+                            color: #1a2a6c;
+                        }
+
+                        /* Schedule Styles */
+                        .schedule-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 1rem;
+                        }
+
+                            .schedule-table th, .schedule-table td {
+                                padding: 0.8rem;
+                                text-align: left;
+                                border-bottom: 1px solid #eee;
+                            }
+
+                            .schedule-table th {
+                                background-color: #f8f9fa;
+                                font-weight: 600;
+                                color: #2c3e50;
+                            }
+
+                            .schedule-table tr:hover {
+                                background-color: #f8f9fa;
+                            }
+
+                        .time-slot {
+                            font-weight: 600;
+                            color: #1a2a6c;
+                        }
+
+                        /* Fees Styles */
+                        .fees-summary {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                            gap: 1.5rem;
+                            margin-bottom: 2rem;
+                        }
+
+                        .summary-card {
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            padding: 1.5rem;
+                            text-align: center;
+                        }
+
+                            .summary-card h3 {
+                                color: #2c3e50;
+                                margin-bottom: 0.5rem;
+                            }
+
+                        .amount {
+                            font-size: 1.8rem;
+                            font-weight: 700;
+                            margin: 0.5rem 0;
+                        }
+
+                        .paid {
+                            color: #27ae60;
+                        }
+
+                        .pending {
+                            color: #e74c3c;
+                        }
+
+                        .fees-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 1rem;
+                        }
+
+                            .fees-table th, .fees-table td {
+                                padding: 0.8rem;
+                                text-align: left;
+                                border-bottom: 1px solid #eee;
+                            }
+
+                            .fees-table th {
+                                background-color: #f8f9fa;
+                                font-weight: 600;
+                                color: #2c3e50;
+                            }
+
+                        .status-paid {
+                            background-color: #d5f4e6;
+                            color: #27ae60;
+                            padding: 0.3rem 0.8rem;
+                            border-radius: 20px;
+                            font-size: 0.8rem;
+                            font-weight: 600;
+                        }
+
+                        .status-pending {
+                            background-color: #fadbd8;
+                            color: #e74c3c;
+                            padding: 0.3rem 0.8rem;
+                            border-radius: 20px;
+                            font-size: 0.8rem;
+                            font-weight: 600;
+                        }
+
+                        /* Exam Styles */
+                        .exam-cards {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                            gap: 1.5rem;
+                            margin-top: 1.5rem;
+                        }
+
+                        .exam-card {
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            padding: 1.5rem;
+                            border-left: 4px solid #1a2a6c;
+                        }
+
+                            .exam-card h3 {
+                                color: #2c3e50;
+                                margin-bottom: 0.5rem;
+                            }
+
+                        .exam-date {
+                            color: #e74c3c;
+                            font-weight: 600;
+                            margin: 0.5rem 0;
+                        }
+
+                        .exam-details {
+                            margin: 0.5rem 0;
+                            color: #7f8c8d;
+                        }
+
+                        /* Profile Styles */
+                        .profile-container {
+                            display: grid;
+                            grid-template-columns: 1fr 2fr;
+                            gap: 2rem;
+                        }
+
+                        .profile-sidebar {
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            padding: 1.5rem;
+                            text-align: center;
+                        }
+
+                        .profile-pic {
+                            width: 150px;
+                            height: 150px;
+                            border-radius: 50%;
+                            background-color: #1a2a6c;
+                            color: white;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 3rem;
+                            margin: 0 auto 1rem;
+                        }
+
+                        .profile-info {
+                            margin-top: 1rem;
+                        }
+
+                            .profile-info p {
+                                margin: 0.5rem 0;
+                                color: #7f8c8d;
+                            }
+
+                        .profile-details {
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            padding: 1.5rem;
+                        }
+
+                        .detail-row {
+                            display: grid;
+                            grid-template-columns: 1fr 2fr;
+                            padding: 1rem 0;
+                            border-bottom: 1px solid #eee;
+                        }
+
+                        .detail-label {
+                            font-weight: 600;
+                            color: #2c3e50;
+                        }
+
+                        .detail-value {
+                            color: #7f8c8d;
+                        }
+
+                        /* Footer Styles */
+                        footer {
+                            background-color: #2c3e50;
+                            color: white;
+                            padding: 1.5rem 2rem;
+                            text-align: center;
+                        }
+
+                        .footer-content {
+                            max-width: 1200px;
+                            margin: 0 auto;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+
+                        .footer-links {
+                            display: flex;
+                            gap: 1.5rem;
+                        }
+
+                            .footer-links a {
+                                color: white;
+                                text-decoration: none;
+                                transition: color 0.3s;
+                            }
+
+                                .footer-links a:hover {
+                                    color: #fdbb2d;
+                                }
+
+                        /* Responsive Styles */
+                        @media (max-width: 768px) {
+                            .header-content, .nav-container {
+                                flex-direction: column;
+                                gap: 1rem;
+                            }
+
+                            .nav-links {
+                                flex-wrap: wrap;
+                                justify-content: center;
+                            }
+
+                            .profile-container {
+                                grid-template-columns: 1fr;
+                            }
+
+                            .footer-content {
+                                flex-direction: column;
+                                gap: 1rem;
+                            }
+
+                            .dashboard-cards, .exam-cards {
+                                grid-template-columns: 1fr;
+                            }
+                        }
+                    </style>
+                </head>
+</asp:Content>
+<asp:Content ID="Content6" runat="server" contentplaceholderid="ContentPlaceHolder2">
+    <body>
+        <div class="container">
+                        <!-- Header -->
+                        <header>
+                            <div class="header-content">
+                                <div class="logo">
+                                    <div class="logo-icon">
+                                        🎓</div>
+                                    <h1>Student Portal</h1>
+                                </div>
+                                
+                            </div>
+            </header>
+
+                        <!-- Navigation -->
+                        <nav>
+                            <div class="nav-container">
+                                <ul class="nav-links">
+                                    <li><a href="student_Dashboard.aspx" class="nav-link active" data-page="dashboard">Dashboard</a></li>
+                                    <li><a href="student_Schedule.aspx" class="nav-link" data-page="schedule">Schedule</a></li>
+                                    <li><a href="student_Fees.aspx" class="nav-link" data-page="fees">Fees</a></li>
+                                    <li><a href="student_Exams.aspx" class="nav-link" data-page="exam">Exams</a></li>
+                                    <li><a href="student_Profile.aspx" class="nav-link" data-page="profile">Profile</a></li>
+                                </ul>
+                               
+                                <asp:Button ID="Button1" runat="server" Text="Logout" class="logout-btn" OnClick="Button1_Click" />
+                            </div>
+            </nav>
+
+                        <!-- Main Content -->
+                        <main>
+                            <!-- Dashboard Page -->
+                            <section id="dashboard" class="page active">
+                                <div class="page-header">
+                                    <h2>Dashboard</h2>
+                                    <p>
+                                        Welcome to your student portal</p>
+                                </div>
+                                <div class="dashboard-cards">
+                                    <div class="card">
+                                        <div class="card-icon">
+                                            📅</div>
+                                        <h3>Today's Schedule</h3>
+                                        <p>
+                                            Mathematics - 10:00 AM</p>
+                                        <p>
+                                            Physics - 02:00 PM</p>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-icon">
+                                            💰</div>
+                                        <h3>Fee Status</h3>
+                                        <p>
+                                            Total Paid: $1,200</p>
+                                        <p>
+                                            Pending: $300</p>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-icon">
+                                            📝</div>
+                                        <h3>Upcoming Exams</h3>
+                                        <p>
+                                            Mathematics - Nov 15</p>
+                                        <p>
+                                            Physics - Nov 20</p>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-icon">
+                                            📊</div>
+                                        <h3>Academic Performance</h3>
+                                        <p>
+                                            Current GPA: 3.75</p>
+                                        <p>
+                                            Attendance: 92%</p>
+                                    </div>
+                                </div>
+            </section>
+
+                            <!-- Schedule Page -->
+                            <section id="schedule" class="page">
+                                <div class="page-header">
+                                    <h2>Class Schedule</h2>
+                                    <p>
+                                        Fall Semester 2023</p>
+                                </div>
+                                <table class="schedule-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Monday</th>
+                                            <th>Tuesday</th>
+                                            <th>Wednesday</th>
+                                            <th>Thursday</th>
+                                            <th>Friday</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="time-slot">9:00 - 10:00</td>
+                                            <td>Mathematics</td>
+                                            <td></td>
+                                            <td>Mathematics</td>
+                                            <td></td>
+                                            <td>Mathematics</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">10:00 - 11:00</td>
+                                            <td>Physics</td>
+                                            <td>Chemistry</td>
+                                            <td>Physics</td>
+                                            <td>Chemistry</td>
+                                            <td>Physics</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">11:00 - 12:00</td>
+                                            <td>Computer Science</td>
+                                            <td>English</td>
+                                            <td>Computer Science</td>
+                                            <td>English</td>
+                                            <td>Computer Science</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">1:00 - 2:00</td>
+                                            <td>Lunch Break</td>
+                                            <td>Lunch Break</td>
+                                            <td>Lunch Break</td>
+                                            <td>Lunch Break</td>
+                                            <td>Lunch Break</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="time-slot">2:00 - 3:00</td>
+                                            <td>History</td>
+                                            <td>Biology</td>
+                                            <td>History</td>
+                                            <td>Biology</td>
+                                            <td>History</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+            </section>
+
+                            <!-- Fees Page -->
+                            <section id="fees" class="page">
+                                <div class="page-header">
+                                    <h2>Fee Details</h2>
+                                    <p>
+                                        Academic Year 2023-2024</p>
+                                </div>
+                                <div class="fees-summary">
+                                    <div class="summary-card">
+                                        <h3>Total Fees</h3>
+                                        <div class="amount">
+                                            $1,500</div>
+                                        <p>
+                                            For Fall Semester 2023</p>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h3>Paid Amount</h3>
+                                        <div class="amount paid">
+                                            $1,200</div>
+                                        <p>
+                                            Last payment: Oct 15, 2023</p>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h3>Pending Amount</h3>
+                                        <div class="amount pending">
+                                            $300</div>
+                                        <p>
+                                            Due date: Dec 15, 2023</p>
+                                    </div>
+                                </div>
+                                <table class="fees-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Fee Type</th>
+                                            <th>Amount</th>
+                                            <th>Due Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Tuition Fee</td>
+                                            <td>$800</td>
+                                            <td>Sep 15, 2023</td>
+                                            <td><span class="status-paid">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Library Fee</td>
+                                            <td>$100</td>
+                                            <td>Sep 15, 2023</td>
+                                            <td><span class="status-paid">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lab Fee</td>
+                                            <td>$200</td>
+                                            <td>Sep 15, 2023</td>
+                                            <td><span class="status-paid">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Examination Fee</td>
+                                            <td>$100</td>
+                                            <td>Nov 15, 2023</td>
+                                            <td><span class="status-paid">Paid</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hostel Fee</td>
+                                            <td>$300</td>
+                                            <td>Dec 15, 2023</td>
+                                            <td><span class="status-pending">Pending</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+            </section>
+
+                            <!-- Exam Page -->
+                            <section id="exam" class="page">
+                                <div class="page-header">
+                                    <h2>Exam Schedule</h2>
+                                    <p>
+                                        Fall Semester 2023</p>
+                                </div>
+                                <div class="exam-cards">
+                                    <div class="exam-card">
+                                        <h3>Mathematics</h3>
+                                        <div class="exam-date">
+                                            November 15, 2023</div>
+                                        <div class="exam-details">
+                                            <p>
+                                                <strong>Time:</strong> 9:00 AM - 12:00 PM</p>
+                                            <p>
+                                                <strong>Room:</strong> A-101</p>
+                                            <p>
+                                                <strong>Type:</strong> Final Exam</p>
+                                        </div>
+                                    </div>
+                                    <div class="exam-card">
+                                        <h3>Physics</h3>
+                                        <div class="exam-date">
+                                            November 20, 2023</div>
+                                        <div class="exam-details">
+                                            <p>
+                                                <strong>Time:</strong> 9:00 AM - 12:00 PM</p>
+                                            <p>
+                                                <strong>Room:</strong> B-205</p>
+                                            <p>
+                                                <strong>Type:</strong> Final Exam</p>
+                                        </div>
+                                    </div>
+                                    <div class="exam-card">
+                                        <h3>Chemistry</h3>
+                                        <div class="exam-date">
+                                            November 25, 2023</div>
+                                        <div class="exam-details">
+                                            <p>
+                                                <strong>Time:</strong> 9:00 AM - 12:00 PM</p>
+                                            <p>
+                                                <strong>Room:</strong> C-301</p>
+                                            <p>
+                                                <strong>Type:</strong> Final Exam</p>
+                                        </div>
+                                    </div>
+                                    <div class="exam-card">
+                                        <h3>Computer Science</h3>
+                                        <div class="exam-date">
+                                            November 30, 2023</div>
+                                        <div class="exam-details">
+                                            <p>
+                                                <strong>Time:</strong> 2:00 PM - 5:00 PM</p>
+                                            <p>
+                                                <strong>Room:</strong> Lab-1</p>
+                                            <p>
+                                                <strong>Type:</strong> Practical Exam</p>
+                                        </div>
+                                    </div>
+                                    <div class="exam-card">
+                                        <h3>English</h3>
+                                        <div class="exam-date">
+                                            December 5, 2023</div>
+                                        <div class="exam-details">
+                                            <p>
+                                                <strong>Time:</strong> 9:00 AM - 12:00 PM</p>
+                                            <p>
+                                                <strong>Room:</strong> A-102</p>
+                                            <p>
+                                                <strong>Type:</strong> Final Exam</p>
+                                        </div>
+                                    </div>
+                                    <div class="exam-card">
+                                        <h3>History</h3>
+                                        <div class="exam-date">
+                                            December 10, 2023</div>
+                                        <div class="exam-details">
+                                            <p>
+                                                <strong>Time:</strong> 2:00 PM - 5:00 PM</p>
+                                            <p>
+                                                <strong>Room:</strong> B-201</p>
+                                            <p>
+                                                <strong>Type:</strong> Final Exam</p>
+                                        </div>
+                                    </div>
+                                </div>
+            </section>
+
+                            <!-- Profile Page -->
+                            <section id="profile" class="page">
+                                <div class="page-header">
+                                    <h2>Student Profile</h2>
+                                    <p>
+                                        Personal and Academic Information</p>
+                                </div>
+                                <div class="profile-container">
+                                    <div class="profile-sidebar">
+                                        <div class="profile-pic">
+                                            JS</div>
+                                        <h3>John Smith</h3>
+                                        <p>
+                                            Student ID: STU2023001</p>
+                                        <div class="profile-info">
+                                            <p>
+                                                Computer Science</p>
+                                            <p>
+                                                Semester: 5th</p>
+                                            <p>
+                                                GPA: 3.75</p>
+                                        </div>
+                                    </div>
+                                    <div class="profile-details">
+                                        <h3>Personal Information</h3>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Full Name:</div>
+                                            <div class="detail-value">
+                                                John Smith</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Date of Birth:</div>
+                                            <div class="detail-value">
+                                                May 15, 2002</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Email:</div>
+                                            <div class="detail-value">
+                                                john.smith@student.edu</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Phone:</div>
+                                            <div class="detail-value">
+                                                +1 (555) 123-4567</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Address:</div>
+                                            <div class="detail-value">
+                                                123 University Ave, College Town, ST 12345</div>
+                                        </div>
+                                        <h3 style="margin-top: 2rem;">Academic Information</h3>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Student ID:</div>
+                                            <div class="detail-value">
+                                                STU2023001</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Department:</div>
+                                            <div class="detail-value">
+                                                Computer Science</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Program:</div>
+                                            <div class="detail-value">
+                                                Bachelor of Science</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Semester:</div>
+                                            <div class="detail-value">
+                                                5th</div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label">
+                                                Admission Date:</div>
+                                            <div class="detail-value">
+                                                August 15, 2021</div>
+                                        </div>
+                                    </div>
+                                </div>
+            </section>
+            </main>
+        </div>
+</asp:Content>
+<asp:Content ID="Content7" runat="server" contentplaceholderid="ContentPlaceHolder3">
+                <!-- Footer -->
+                <footer>
+                    <div class="footer-content">
+                        <div class="copyright">
+                            <p>
+                                &copy; 2023 Student Portal. All rights reserved.</p>
+                        </div>
+                        <div class="footer-links">
+                            <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Contact Us</a>
+                        </div>
+                    </div>
+    </footer>
+        </div>
+
+        <script>
+            // Page Navigation
+            document.addEventListener('DOMContentLoaded', function () {
+                const navLinks = document.querySelectorAll('.nav-link');
+                const pages = document.querySelectorAll('.page');
+
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        // Remove active class from all links and pages
+                        navLinks.forEach(navLink => navLink.classList.remove('active'));
+                        pages.forEach(page => page.classList.remove('active'));
+
+                        // Add active class to clicked link
+                        this.classList.add('active');
+
+                        // Show corresponding page
+                        const pageId = this.getAttribute('data-page');
+                        document.getElementById(pageId).classList.add('active');
+                    });
+                });
+
+                // Logout button functionality
+                const logoutBtn = document.querySelector('.logout-btn');
+                logoutBtn.addEventListener('click', function () {
+                    if (confirm('Are you sure you want to logout?')) {
+                        alert('You have been logged out successfully.');
+                        // In a real application, this would redirect to login page
+                    }
+                });
+            });
+        </script>
+</body>
+</html>
+
+</asp:Content>
+

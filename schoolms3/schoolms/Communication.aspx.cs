@@ -1,0 +1,1 @@
+using System;namespace schoolms{public partial class Communication:System.Web.UI.Page{protected void Page_Load(object s,EventArgs e){if(Session["teacher"]==null){Response.Redirect("Teacher_login.aspx");return;}litTeacher.Text="Teacher Portal";}}}
